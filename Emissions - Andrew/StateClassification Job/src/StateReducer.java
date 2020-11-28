@@ -24,7 +24,7 @@ public class StateReducer extends Reducer<Text, Text, Text, Text> {
             for(Text t : values){
                 total += Long.parseLong(t.toString());
             }
-            mos.write(key, new Text("" + total), key.toString());
+            mos.write((Text)null, new Text("" + total), key.toString());
         }else{
             List<String> vals = new ArrayList<>();
             for(Text text : values){
@@ -32,7 +32,7 @@ public class StateReducer extends Reducer<Text, Text, Text, Text> {
             }
 
             String value = String.join("\n", vals);
-            mos.write(key, new Text(value), key.toString());
+            mos.write((Text)null, new Text(value), key.toString()); //key set to null to prevent key from being in file
         }
     }
 }
