@@ -13,7 +13,7 @@ The download scripts require that you setup an account with EarthData (https://u
 You may need to change the line ending mode to LF is it is set to CRLF before running these files.
 
 ## State Classification
-* States are classified using a ray-tracing approach from longitude and latitude values (https://en.wikipedia.org/wiki/Point_in_polygon)
+* States are classified using a ray-casting approach from longitude and latitude values (https://en.wikipedia.org/wiki/Point_in_polygon)
 * I've used the polygons generated here: https://github.com/LyleScott/google-maps-us-states-polygons/blob/master/coords.js converted into a text file
 * The text file is loaded into the job cache and used by all the mappers
 * Any data entry that does not belong to a US state is tallied under the key "OUTSIDE-US"
