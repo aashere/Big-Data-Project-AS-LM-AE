@@ -17,3 +17,21 @@ You may need to change the line ending mode to LF is it is set to CRLF before ru
 * I've used the polygons generated here: https://github.com/LyleScott/google-maps-us-states-polygons/blob/master/coords.js converted into a text file
 * The text file is loaded into the job cache and used by all the mappers
 * Any data entry that does not belong to a US state is tallied under the key "OUTSIDE-US"
+#### Some scripts/commands
+* List the outputs - *./listOutputs.sh*
+* Print output for california - "*./listOutputs.sh california*"
+* Print output for california for 2020 - "*./listOutputs.sh california | grep "2020*"
+
+
+## State Statistics
+* I generate the following datapoints for each state:
+  * Average CO2 PPM
+  * Median CO2 PPM
+  * Min CO2 PPM
+  * Max CO2 PPM
+  * Total Records
+* For each of the following ranges of time: All time (2019-2020), Yearly, Monthly
+#### Some scripts/commands
+* List the outputs - *./listOutputs.sh*
+* Print output for new york - "*./listOutputs.sh "new york"*"
+  ![Stats Example](stats-example.png)
