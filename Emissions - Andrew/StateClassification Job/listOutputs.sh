@@ -1,0 +1,1 @@
+hdfs dfs -ls project/state_output | grep -v "part"
