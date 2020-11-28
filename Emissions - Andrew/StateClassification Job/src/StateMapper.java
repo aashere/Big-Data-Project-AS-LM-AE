@@ -77,11 +77,12 @@ public class StateMapper extends Mapper<LongWritable, Text, Text, Text> {
         if(state.equals("OUTSIDE-US")){ //Just keep count of these, otherwise we having timeout issues during reduce step
             context.write(new Text(state), new Text("1"));
         }else{
-            String[] newColumns = new String[4];
+            String[] newColumns = new String[5];
             newColumns[0] = columns[0]; //CO2 PPM
             newColumns[1] = columns[3]; //Year
             newColumns[2] = columns[4]; //Month
             newColumns[3] = columns[5]; //Day
+            newColumns[4] = state; //State, used in last analytic job
 
             String val = String.join(",", newColumns);
             context.write(new Text(state), new Text(val)); //Write out state and data
