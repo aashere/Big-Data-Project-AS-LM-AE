@@ -34,6 +34,7 @@ You may need to change the line ending mode to LF is it is set to CRLF before ru
 #### Some scripts/commands
 * List the outputs - *./listOutputs.sh*
 * Print output for new york - "*./listOutputs.sh "new york"*"
+
   ![Stats Example](stats-example.PNG)
 
 
