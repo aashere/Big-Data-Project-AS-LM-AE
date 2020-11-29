@@ -35,3 +35,12 @@ You may need to change the line ending mode to LF is it is set to CRLF before ru
 * List the outputs - *./listOutputs.sh*
 * Print output for new york - "*./listOutputs.sh "new york"*"
   ![Stats Example](stats-example.png)
+
+
+# Data workflow
+1. Download semi-processed data from NASA
+2. Extract data into a text format
+3. Compress and move to HDFS
+4. Clean and Profile the data which outputs a cleaned data set
+5. Run the State Classification job on the cleaned data set 
+6. Run the Statistics job on the state-classified dataset
