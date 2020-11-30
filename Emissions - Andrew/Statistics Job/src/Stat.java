@@ -26,12 +26,12 @@ public class Stat {
         this.values = new ArrayList<>();
     }
 
-    public void addData(String year, String month, float co2){
+    public void addData(String year, int month, float co2){
         switch(this.range){
             case ALL_TIME:
                 break;
             case YEARLY:
-                if(!this.id.equalsIgnoreCase(year + "-ALL"))return;
+                if(!this.id.equalsIgnoreCase(year))return;
                 break;
             case MONTHLY:
                 if(!this.id.equalsIgnoreCase(year + "-" + month))return;
@@ -60,9 +60,12 @@ public class Stat {
         this.medianCO2 = middle;
     }
 
-    public String toString(){ //This should only be called once per time frame
+    public String toString(String state){ //This should only be called once per time frame
         this.avgCO2 = (this.totalCO2/this.totalRecords);
         this.calculateMedian();
+        if(!state.isEmpty()){
+            return state + "," + this.id + "," + this.avgCO2 + "," + this.medianCO2 + "," + this.minCO2 + "," + this.maxCO2 + "," + totalRecords;
+        }
         return this.avgCO2 + "," + this.medianCO2 + "," + this.minCO2 + "," + this.maxCO2 + "," + totalRecords;
     }
 }

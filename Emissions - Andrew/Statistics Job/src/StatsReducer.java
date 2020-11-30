@@ -17,24 +17,25 @@ public class StatsReducer extends Reducer<Text, FloatArrayWritable, Text, Text> 
     private MultipleOutputs mos;
     List<Stat> stats;
 
+    private StateNames names;
+
     @Override
     public void setup(Context context){
         mos = new MultipleOutputs(context);
+        names = new StateNames();
         stats = new ArrayList<>();
 
         //Generate stat object for each month 2020-2019
         //Using seperate loops so it's in order in output
-        stats.add(new Stat(StatRange.ALL_TIME, "ALL-TIME"));
-        stats.add(new Stat(StatRange.YEARLY, "2019-ALL"));
+        stats.add(new Stat(StatRange.ALL_TIME, "ALL"));
+        stats.add(new Stat(StatRange.YEARLY, "2019"));
         for(int i = 1; i <= 12; i++){
-            String monthName = nameOfMonth(i);
-            stats.add(new Stat(StatRange.MONTHLY, "2019-" + monthName));
+            stats.add(new Stat(StatRange.MONTHLY, "2019-" + i));
         }
 
-        stats.add(new Stat(StatRange.YEARLY, "2020-ALL"));
+        stats.add(new Stat(StatRange.YEARLY, "2020"));
         for(int i = 1; i <= 12; i++){
-            String monthName = nameOfMonth(i);
-            stats.add(new Stat(StatRange.MONTHLY, "2020-" + monthName));
+            stats.add(new Stat(StatRange.MONTHLY, "2020-" + i));
         }
 
     }
@@ -46,21 +47,17 @@ public class StatsReducer extends Reducer<Text, FloatArrayWritable, Text, Text> 
             float co2 = vals[0].get();
             int year = (int)vals[1].get();
             int month = (int)vals[2].get();
-            String monthName = nameOfMonth(month);
             for(Stat stat : this.stats){ //Only 27 different ones here
-                stat.addData("" + year, monthName, co2);
+                stat.addData("" + year, month, co2);
             }
         }
 
         for(Stat stat : this.stats){
             if(stat.hasBeenModified){
                 //Write to the output (key=stat.id, value=stats, filename=state)
-                mos.write(new Text(stat.id), new Text(stat.toString()), key.toString());
+                mos.write((Text)null, new Text(stat.toString(names.getAbbr(key.toString()))), key.toString());
             }
         }
     }
 
-    public String nameOfMonth(int month){
-        return Month.of(month).name();
-    }
 }
