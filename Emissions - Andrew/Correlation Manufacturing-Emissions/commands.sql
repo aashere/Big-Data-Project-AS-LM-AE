@@ -1,3 +1,6 @@
+--Save manufacturing data from Ameya's impala table to a csv so I can import
+impala-shell -B -q "use as12366; select * from normalized" -o 'all_state_manufacturing.csv' --output_delimiter=',';
+
 --Select all records
 select * from allStates;
 
