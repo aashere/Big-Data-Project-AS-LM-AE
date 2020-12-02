@@ -168,6 +168,104 @@ states.sh - Runs cleaning and profiling code for each state
 
 ------------------------------------------------------------------------------------------------------------
 Lucille Mure (lam923): Covid Data and Carbon Emissions vs. Covid analytic
+In HDFS:
+Directory and File Tree (My HDFS filesystem):
+/user/lam923/
+|-- input_data/
+|   |-- covid_data.csv
+|-- CleanOutput/
+|   |-- clean_output 
+|   |-- OrganizeMonths
+|-- CountRecs
+|   |-- original_count
+|   |--new_count
+Input Data: hdfs dfs -cat '/user/lam923/input_data/covid_data.csv'
+/anacode:
+	Hive Commands:
+		The hive commands used for the analytic in a file called “Lucille Mure Hive 
+Commands.pdf” in a folder called /lucillemure_ana_code under the folder /ana_code
+	How to run code:
+		To run the Hive code, one can follow the commands in the file called “Lucille 
+Mure Hive Commands.pdf”. Commands with > are in hive. Commands with $ are 
+in HDFS (unless listed as running in local)
+
+	To find results:
+		In my Hive database, correlation_results is the name of the table containing the 
+results on the analytic. In HDFS this can be found under '/user/lam923/correlation_output’. The columns of this table are: 1.state 2.correlation coefficient
+
+/etl_code
+	There are two programs in this directory (in a folder called lucillemure_etl_code). 
+	The program Clean removes rows from the input data that we do not want to use. 
+For this program, there are three files, CleanMapper.java, CleanReducer.java and Clean.java 
+To build this code (in HDFS):
+		$javac -classpath "$(yarn classpath)" -d . CleanMapper.java
+		$javac -classpath "$(yarn classpath)" -d . CleanReducer.java
+		$javac -classpath "$(yarn classpath)":. -d . Clean.java
+		$ jar -cvf Clean.jar *.class
+	To run this code:
+		$hdfs dfs -mkdir CleanOutput
+		$hdfs dfs -put covid_data.csv  CleanOutput
+		$hadoop jar Clean.jar Clean /user/lam923/CleanOutput/covid_data.csv 
+/user/lam923/CleanOutput/clean_output
+To view results:
+		 $hdfs dfs -cat /user/lam923/CleanOutput/clean_output/part-r-00000
+		(in my HDFS directory you can find results under 
+‘/user/lam923/CleanOutput/clean_output/part-r-00000’)
+
+To run OrganizeMonths:
+	$hdfs -get /user/lam923/CleanOutput/clean_output
+		//we need to get this data into HDFS so we can use it for OrganizeMonths
+
+The program OrganizeMonths creates an output file with the number of cases per month from January to September for every state we are using in our analytic. 
+For this program, there are three files, OrganizeMonthsMapper.java, OrganizeMonthsReducer.java and OrganizeMonths.java 
+To build this code (in HDFS):
+		$javac -classpath "$(yarn classpath)" -d . OrganizeMonthsMapper.java
+		$javac -classpath "$(yarn classpath)" -d . OrganizeMonthsReducer.java
+		$javac -classpath "$(yarn classpath)":. -d .OrganizeMonths.java
+		$ jar -cvf OrganizeMonths.jar *.class
+	To run this code:
+		$hdfs dfs -mkdir OrganizeMonthsOutput
+		//we need the output from clean in this directory
+		$hdfs dfs -put clean_output OrganizeMonthsOutput 		
+$hadoop jar OrganizeMonths.jar OrganizeMonths /user/lam923/OrganizeMonthsOutput/clean_output/part-r-00000 /user/lam923/OrganizeMonthsOutput/OrganizeMonths
+To view results:
+		 $ hdfs dfs -cat   
+/user/lam923/OrganizeMonthsOutput/OrganizeMonths/part-r-00000
+		//in my HDFS directory you can find results under 
+‘/user/lam923/OrganizeMonthsOutput/OrganizeMonths/part-r-00000’
+//the columns are 1.month 2.state 3.total cases for that month
+
+To use Hive:
+		$hdfs dfs -get /user/lam923/OrganizeMonthsOutput/OrganizeMonths we need to 
+put this data into HDFS so we can use it in Hive later on 
+/profiling data
+	The profiling data is under lucillemure_profiling_data. There are three files, 
+CountRecs.java, CountRecsMapper.java and CountRecsReducer.java
+To build this code (in HDFS):
+		$javac -classpath "$(yarn classpath)" -d . CountRecsMapper.java
+		$javac -classpath "$(yarn classpath)" -d . CountRecsReducer.java
+		$javac -classpath "$(yarn classpath)":. -d .CountRecs.java
+		$ jar -cvf CountRecs.jar *.class
+	To run this code:
+		$hdfs dfs -mkdir OrganizeMonthsOutput
+		//we need the original data and the output from clean in this directory
+		$hdfs dfs -put covid_data.csv CountRecs	
+		$hdfs dfs -get /user/lam923/CleanOutput/clean_output
+		$hdfs dfs -put clean_output CountRecs
+$hadoop jar CountRecs.jar CountRecs /user/lam923/CountRecs/covid_data.csv /user/lam923/CountRecs/original_count
+$hadoop jar CountRecs.jar CountRecs /user/lam923/CountRecs/clean_output/part-r-00000 /user/lam923/CountRecs/new_count
+
+
+To view results:
+	 //old count
+		 $hdfs dfs -cat /user/lam923/CountRecs/original_count/part-r-00000
+		// in my HDFS directory you can find results under 
+// ‘/user/lam923/CountRecs/original_count/part-r-00000’
+
+//new count
+$hdfs dfs -cat /user/lam923/CountRecs/new_count/part-r-00000
+// in my HDFS directory you can find results under 
+// ‘/user/lam923/CountRecs/new_count/part-r-00000’
 
 ------------------------------------------------------------------------------------------------------------
 Andrew Epifano (ae1586): Carbon Emissions data and Manufacturing vs. Carbon Emissions analytic
