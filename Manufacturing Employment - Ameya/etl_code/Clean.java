@@ -7,18 +7,18 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 
-public class CountRecs{
-
+//This MR job cleans the input file, checking for bad or missing data
+public class Clean{
 	public static void main(String[] args) throws Exception{
 		//Set job configuration settings
-		JobConf conf = new JobConf(CountRecs.class);
-		conf.setJobName("countrecs");
+		JobConf conf = new JobConf(Clean.class);
+		conf.setJobName("clean");
 		
 		conf.setOutputKeyClass(Text.class);
 		conf.setOutputValueClass(Text.class);
 
-		conf.setMapperClass(CountRecsMapper.class);
-		conf.setReducerClass(CountRecsReducer.class);
+		conf.setMapperClass(CleanMapper.class);
+		conf.setReducerClass(CleanReducer.class);
 		conf.setNumReduceTasks(1);
 
 		conf.setInputFormat(TextInputFormat.class);
@@ -29,6 +29,8 @@ public class CountRecs{
 
 		//Pass in state name from command line as third argument to MR job
 		conf.set("state", args[2]);
+		//Use a comma to separate key and value so that output can be a csv
+		conf.set("mapreduce.output.textoutputformat.separator", ",");
 
 		JobClient.runJob(conf);
 	}

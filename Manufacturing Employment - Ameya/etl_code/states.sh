@@ -1,7 +1,11 @@
 #remove cleaned data directory
-hdfs dfs -rm -r /user/as12366/project/cleaned_data
+#NOTE: I have commented these lines out for now, as they will delete the existing
+#cleaned data, and this job will take over an hour to execute and produce new cleaned data.
+#In order to fully re-execute this script, the following lines must be uncommented.
+
+#hdfs dfs -rm -r /user/as12366/project/cleaned_data
 #Create cleaned data directory
-hdfs dfs -mkdir /user/as12366/project/cleaned_data
+#hdfs dfs -mkdir /user/as12366/project/cleaned_data
 
 #Remove and recreate bad records file
 rm bad_records.txt
