@@ -9,30 +9,45 @@ Division of labor:
 
 Note: Inside each of the required directories for this code drop are folders/files labeled with our names to indicate which person's portion of the project that file/folder corresponds to.
 
-Directory/file tree for this final code drop:
+Main directory/file tree structure for this final code drop:
 /
 |-- data_ingest/
+|   |-- AmeyaShere_data_ingestion.pdf
+|   |-- LucilleMure_data_ingestion.pdf
+|   |-- AndrewEpifano_data_ingestion/
 |-- etl_code/
+|   |-- ameyashere_etl_code/
+|   |-- lucillemure_etl_code/
+|   |-- andrewepifano_etl_code/
 |-- profiling_code/
+|   |-- ameyashere_profiling_code/
+|   |-- lucillemure_profiling_code/
+|   |-- andrewepifano_profiling_code/
 |-- ana_code/
+|   |-- ameyashere_ana_code/
+|   |-- lucillemure_ana_code/
+|   |-- andrewepifano_ana_code/
 |-- screenshots/
+|   |-- ameyashere_screenshots/
+|   |-- lucillemure_screenshots/
+|   |-- andrewepifano_screenshots/
 |-- README.md
 
-See below for information on running each of our individual analytics.
+See below for information on running each of our individual analytics and for detailed directories for our individual folders.
 
 ------------------------------------------------------------------------------------------------------------
 Ameya Shere (as12366): Manufacturing Employment Data and Manufacturing Employment vs. Covid analytic
 
 A few notes:
 1) In all directories with scripts, the command "chmod +x *.sh" must be run before scripts can be executed.
-2) Since my "states.sh" script executes the cleaning and profiling jobs at the same time, code and scripts in directories "etl_code" and "profiling_code" must be combined into one directory in order for "states.sh" to work properly.
+2) Since my "states.sh" script executes the cleaning and profiling jobs at the same time, code and scripts in directories "etl_code/ameyashere_etl_code" and "profiling_code/ameyashere_profiling_code" must be combined into one directory in order for "states.sh" to work properly.
 3) "states.sh" takes over an hour to execute and produce cleaned and profiled code. In order to avoid the existing cleaned and profiled data being deleted and an hour-long job being needed to get that data back, I have commented out the first couple lines of "states.sh". If you would like to fully recreate the execution of "states.sh", please uncomment those first couple lines; however, please be aware that the existing cleaned and profiled data will be deleted in that case.
 4) "analytic.sh" begins with a line that brings Lucille's Covid data from her Hive database to my local directory. I have used an environment variable "$HIVE_PASSWORD" in this command in order to avoid writing my password directly in the script. As such, the first line will fail when the variable is not set. However, if Lucille's "monthlycasesoutput" table is retrieved in some other way and brought to the local directory as a CSV, the rest of the script will succeed.
 
 Running the code:
 Note: Input data can be found in "/user/as12366/project/raw_data".
 1) Cleaning and profiling: These two MapReduce jobs clean the data, check for missing or bad data, and profile the data. This process is repeated for every individual state data file. The data this code runs on can be found in "/user/as12366/project/raw_data" on HDFS. The HDFS directory the result of this code can be found in is "/user/as12366/project/cleaned_data".
-	a) Make sure the code inside "etl_code" and "profiling_code" is put into the same directory.
+	a) Make sure the code inside "etl_code/ameyashere_etl_code" and "profiling_code/ameyashere_profiling_code" is put into the same directory.
 	b) Navigate to this directory.
 	c) Run "./states.sh". Please heed the notes above regarding this script.
 2) Joining: This Impala job takes all the individual state data files and joins them into one big table. The data this code runs on can be found in "/user/as12366/project/cleaned_data". The HDFS file the result of this code can be found in is "/user/as12366/joined_data/All_States.csv".
@@ -44,6 +59,48 @@ Note: Input data can be found in "/user/as12366/project/raw_data".
 4) Analytic: This Impala job retrieves Lucille's "monthlycasesoutput" table from her Hive database and stores it in HDFS at location "/user/as12366/project/covid_data". The job then brings the "monthlycasesoutput" table into Impala, joins it with my normalized manufacturing data (keeping only rows from Jan. 2020 and later so that the date labels match up), and calculates the correlation coefficient for each state for Manufacturing Employment vs. Covid cases. This code runs on tables in Impala. The HDFS file the result of this code can be found in is "/user/as12366/project/final_analytic/Manufacturing_vs_Covid_FINAL.csv".
 	a) Navigate to the directory containing "analytic.sh" and "analytic.sql".
 	b) Run "./analytic.sh". Please heed the note above regarding this script.
+
+Directory and File Tree (my files and directories in this submission):
+/
+|-- data_ingest/
+|   |-- AmeyaShere_data_ingestion.pdf
+|-- etl_code/
+|   |-- ameyashere_etl_code/
+|       |-- Clean.java
+|       |-- CleanMapper.java
+|       |-- CleanReducer.java
+|       |-- clean_setup.sh
+|       |-- clean_run.sh
+|       |-- go.sh
+|       |-- states.sh
+|-- profiling_code/
+|   |-- ameyashere_profiling_code/
+|       |-- CountRecs.java
+|       |-- CountRecsMapper.java
+|       |-- CountRecsReducer.java
+|       |-- profile_setup.sh
+|       |-- profile_run.sh
+|-- ana_code/
+|   |-- ameyashere_ana_code/
+|       |-- join/
+|       |   |-- join.sh
+|       |   |-- join.sql
+|       |-- normalize/
+|       |   |-- normalize.sh
+|       |   |-- normalize.sql
+|       |-- analytic/
+|           |-- analytic.sh
+|           |-- analytic.sql
+|-- screenshots/
+    |-- ameyashere_screenshots/
+        |-- screenshot_1.jpeg
+        |-- screenshot_2.jpeg
+        |-- screenshot_3.jpeg
+        |-- screenshot_4-1.jpeg
+        |-- screenshot_4-2.jpeg
+        |-- screenshot_4-3.jpeg
+        |-- screenshot_4-4.jpeg
+        |-- screenshot_4-5.jpeg
 
 Directory and File Tree (My DUMBO filesystem):
 /home/as12366/project
