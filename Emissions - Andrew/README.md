@@ -12,6 +12,78 @@ The download scripts require that you setup an account with EarthData (https://u
 ## General:
 You may need to change the line ending mode to LF is it is set to CRLF before running these files.
 
+# Running Mapreduce Jobs
+* All the map reduce jobs should be paired with a compile.sh script that must be run in the same directory as the .java files themselves.
+* To run the job, just run "hadoop jar [jarName].jar [MainClassName] [inputDir] [outputDir]
+
+# Running Impala Queries
+* You can find sql files that contain the queries I ran.
+
+#File Structure
+## Dumbo structure
+
+project/  
+├─ ClassifyStates/  
+│  ├─ ClassifyStats.jar  
+│  ├─ compile.sh  
+│  ├─ GeographicPosition.java  
+│  ├─ listOutputs.sh  
+│  ├─ Region.java  
+│  ├─ run.sh  
+│  ├─ setup.sh  
+│  ├─ stateBoundaries.txt  
+│  ├─ StateClassification.java  
+│  ├─ StateMapper.java  
+│  ├─ StateReducer.java  
+├─ Clean/  
+│  ├─ Clean.jar  
+│  ├─ Clean.java  
+│  ├─ CleanMapper.java  
+│  ├─ CleanReducer.java  
+├─ JoinedData/  
+│  ├─ all_states_emissions.csv  
+├─ Profile/  
+│  ├─ CountRecs.java  
+│  ├─ CountRecs.jar  
+│  ├─ CountRecsMapper.java  
+│  ├─ CountRecsReducer.java  
+├─ Statistics/  
+│  ├─ calculateStats.jar  
+│  ├─ compile.sh  
+│  ├─ FloatArrayWritable.java  
+│  ├─ listOutputs.sh  
+│  ├─ run.sh  
+│  ├─ StateNames.java  
+│  ├─ StateStats.java  
+│  ├─ Stat.java  
+│  ├─ StatRange.java  
+│  ├─ StatsMapper.java  
+│  ├─ StatsReducer.java  
+├─ temp/  
+│  ├─ 2019/  
+│  │  ├─ ...csv  
+│  ├─ 2020/  
+│  │  ├─ ...csv  
+
+## hdfs structure
+project/  
+├─ cleaned_output/  
+│  ├─ Output of cleaning job   
+├─ config/  
+│  ├─ Contains stateBoundaries information to be shared among all mappers during state classification job     
+├─ input/   
+│  ├─ Original inputs for 2020 and 2019   
+├─ joined_states/  
+│  ├─ All states outputs from statistics job in one file      
+├─ record-counts/    
+│  ├─ Count job output     
+├─ state_output/  
+│  ├─ State classification job output  
+├─ statistics_output/  
+│  ├─ Output for statistics job   
+├─ joined_manufacturing/  
+│  ├─ joined manufacturing data from Ameya's impala table
+
 ## State Classification
 * States are classified using a ray-casting approach from longitude and latitude values (https://en.wikipedia.org/wiki/Point_in_polygon)
 * I've used the polygons generated here: https://github.com/LyleScott/google-maps-us-states-polygons/blob/master/coords.js converted into a text file
